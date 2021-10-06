@@ -1,9 +1,14 @@
+import React, { useEffect, useState } from 'react';
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
+
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
-import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 
 export default function Home() {
+  const [answer, setAnswer] = useState('');
+
+  // Function to send stuff to Q&A API endpoint
   const askQuestion = async (question) => {
     const response = await (await fetch('/api/god', {
         method: 'POST',
@@ -12,19 +17,34 @@ export default function Home() {
       })
     })).json();
 
-    console.log(response);
+    setAnswer(response.text);
   }
 
-  const commands = [{
-    command: 'Hi Simon *',
-    callback: (question) => askQuestion(question)
-  }]
+  // Define commands to listen to
+  const commands = [
+    {
+      command: 'Hi Simon *',
+      callback: (question) => askQuestion(question)
+    },
+    {
+      command: 'Hey Simon *',
+      callback: (question) => askQuestion(question)
+    },
+  ]
 
+  // Initialize speech recognition module
   const {
     transcript,
     listening,
     resetTranscript
   } = useSpeechRecognition({ commands });
+
+  // Reset answer is a new question is asked
+  useEffect(() => {
+      if (listening && answer) {
+        setAnswer('');
+      }
+    }, [listening, answer])
 
   return (
     <div className={styles.container}>
@@ -51,6 +71,12 @@ export default function Home() {
           <button onClick={resetTranscript}>Reset</button>
           
           <p>{transcript}</p>
+
+          { answer && 
+            <p>
+              <strong>{answer}</strong>
+            </p>
+          }
         </div>
       </main>
 

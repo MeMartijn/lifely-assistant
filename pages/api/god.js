@@ -3,6 +3,7 @@ import { QAClient } from 'question-answering';
 export default async function handler(req, res) {
   // Get search query
   const query = JSON.parse(req.body);
+  console.log(query);
 
   const text = `
     We’ve allocated €250 (per annum) for Junior and Mid-level colleagues, and €450 (per annum) learning budget for Senior personnel.
@@ -17,11 +18,8 @@ export default async function handler(req, res) {
     If a conference or study exceeds this number, you're expected to take a day off using the holidays you have left.
   `;
 
-  const question = 'How much learning budget does senior personnel get?';
-
   const qaClient = await QAClient.fromOptions();
-  const answer = await qaClient.predict(question, text);
+  const answer = await qaClient.predict(query.question, text);
 
-  console.log(answer);
-  res.status(200).json({ name: 'John Doe' })
+  res.status(200).json(answer)
 }
