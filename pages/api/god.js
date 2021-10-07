@@ -11,7 +11,7 @@ export default async function handler(req, res) {
     All education budgets must be approved by competent Leads.
     If there are exceptional circumstances where educational endeavours exceed the aforementioned budget requirements, Lifely Management will assess the feasibility in the context of current investment strategy and capacity.
     There’s always space to ask.
-    Any left-over budget should be transferred back to Lifely, budget is not transferable to the following year.
+    Any leftover budget should be transferred back to Lifely, budget is not transferable to the following year.
     This is the case for all budgets.
     Education budget is only applicable for colleagues that have worked at Lifely for over four months.
     Educational projects may take up to one working day a year.
@@ -20,6 +20,8 @@ export default async function handler(req, res) {
 
   const qaClient = await QAClient.fromOptions();
   const answer = await qaClient.predict(query.question, text);
+
+  console.log(answer);
 
   res.status(200).json(answer)
 }
